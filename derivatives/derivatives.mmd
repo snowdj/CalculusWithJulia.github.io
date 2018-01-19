@@ -1,6 +1,12 @@
+
 # Derivatives
 
-Before defining the derivative, let's begin with two motivating examples, that are familiar to any reader of a calculus text.
+```nocode, noout
+using Plots
+plotly()
+```
+
+Before defining the derivative, let's begin with two motivating examples that should be familiar.
 
 ##### Example: Driving
 
@@ -13,25 +19,25 @@ The speedometer reads 60 miles per hour, what is the odometer doing?
 Besides recording total distance traveled, it is incrementing
 dutifully every hour by 60 miles. Why? Well, the well-known formula relating distance, time and rate of travel is
 
-$$
+$$~
 \text{distance} = \text{ rate } \times \text{ time.}
-$$
+~$$
 
 If the rate is a constant $60$ miles/hour, then in one hour the distance traveled is 60 miles.
 
-Of course, the odometer isn't just incrementing once per hour, it is incrementing once every 1/10th of a mile. How much time is that? Well, we would need to solve $1/10=60 \cdot t$ which means $t=1/600$ hours, better known as once every 6 seconds.
+Of course, the odometer isn't just incrementing once per hour, it is incrementing once every 1/10th of a mile. How much time does that take? Well, we would need to solve $1/10=60 \cdot t$ which means $t=1/600$ hours, better known as once every 6 seconds.
 
 Using some mathematical notation, would give $x(t) = v\cdot t$, where
 $x$ is position at time $t$, $v$ is the velocity and $t$ the time
-traveled in hours. A simple graph of the first three hours would show:
+traveled in hours. A simple graph of the first three hours of travel would show:
 
 ```
-using Gadfly
+using Plots
 position(t) = 60 * t
 plot(position, 0, 3)
 ```
 
-Oh no, we hit traffic. For the next 30 minutes, the we only traveled
+Oh no, we hit traffic. In the next 30 minutes we only traveled
 15 miles. We were so busy looking out for traffic, the speedometer was
 not checked. What would the average speed have been? Though in the 30
 minutes, the displayed speed may have varied, the *average speed*
@@ -43,10 +49,10 @@ $\Delta x / \Delta t$. That is
 ```
 
 
-Now suppose, the GPS in the car gives us a readout of distance traveled
+Now suppose that after $6$ hours of travel the GPS in the car gives us a readout of distance traveled
 as a function of time. The graph looks like this:
 
-```
+```nocode
 function position(t) 
   if t <= 3
      60*t
@@ -60,14 +66,13 @@ function position(t)
      position(4) + 60(t-4.5)
   end
 end
-p = plot(position, 0, 6)
-Outputonly(p)
+plot(position, 0, 6)
 ```
 
 We can see with some effort that the slope is steady for the first three hours, is slightly less between $3$ and
 $3.5$ hours, then is a bit steeper for the next half hour. After that, it is flat for the
 about half an hour, then the slope continues on with same value as in the first
-3 hours.
+3 hours. What does that say about our speed during our trip?
 
 Based on the graph, what was the average speed over the first three hours? Well, we traveled 180 miles, and took 3 hours:
 
@@ -138,8 +143,8 @@ distance.
 One of history's most famous experiments was performed by
 [Galileo](http://en.wikipedia.org/wiki/History_of_experiments) where
 he rolled balls down inclined ramps, making note of distance traveled
-with respect to time. Galileo had no ultra-accurate measuring device,
-so needed to slow movement down by controlling the angle of the
+with respect to time. As Galileo had no ultra-accurate measuring device,
+he needed to slow movement down by controlling the angle of the
 ramp. With this, he could measure units of distance per units of time.
 (Click through to *Galileo and Perspective* [Dauben](http://www.mcm.edu/academic/galileo/ars/arshtml/mathofmotion1.html).)
 
@@ -163,7 +168,7 @@ A graph of distance versus time could be found by interpolating between the meas
 ```
 ts = [0,1,2,3,4, 5]
 xs = [0,1,4,9,16,25]
-plot(x=ts, y=xs, Geom.line)
+plot(ts, xs)
 ```
 
 The graph looks almost quadratic. What would the following questions have yielded?
@@ -218,9 +223,9 @@ a line intersecting two specified points on a curve.
 
 Rather than parameterize this problem using $a$ and $b$, we let $c$ and $c+h$ represent the two values for $x$, then the secant-line-slope formula becomes
 
-$$
+$$~
 m = \frac{f(c+h) - f(c)}{h}.
-$$
+~$$
 
 ## The slope of the tangent line
 
@@ -233,12 +238,12 @@ $h$ goes to $0$?
 
 
 The graphic suggests that the slopes of the secant line converge to
-the slope of a "tangent" line. That is this, for a given $c$, this
+the slope of a "tangent" line. That is, for a given $c$, this
 limit exists:
 
-$$
+$$~
 \lim_{h \rightarrow 0} \frac{f(c+h) - f(c)}{h}.
-$$
+~$$
 
 We'll define the tangent line at $(c, f(c))$ to be the line through
 the point with the slope from the limit above -- provided that limit
@@ -273,7 +278,8 @@ limit as $h$ goes to $0$ of $\sin(h)/h$. We know this to be 1.
 f(x) = sin(x)
 c = 0
 tl(x) = f(c) + 1 * (x - c)
-plot([f, tl], -pi/2, pi/2)
+plot(f, -pi/2, pi/2)
+plot!(tl)
 ```
 
 ## The derivative
@@ -284,9 +290,9 @@ line) or it does not exist. That is, there is derived function from
 $f$. Call this function the *derivative* of $f$. There are many
 notations for this, here we use the "prime" notation:
 
-$$
+$$~
 f'(x) = \lim_{h \rightarrow 0} \frac{f(x+h) - f(x)}{h}.
-$$
+~$$
 
 The limit above is identical, only it uses $x$ instead of $c$ to
 emphasize that we are thinking of function now, and not just a value
@@ -299,7 +305,7 @@ at a point.
 
 ```
 using SymPy
-x, h = symbols("x, h", real=true)
+@vars x h real=true
 n = 5
 ex = expand((x+h)^n - x^n)
 ```
@@ -314,7 +320,7 @@ We see the lone term `5x^4` without an $h$, so as we let $h$ go to $0$, this wil
 
 
 For general integer-value, positive $n$, the binomial theorem gives an
-expansion $(x+h)^n = x^n + nx^{n-1} + \cdots$. Subtracting $x^n$
+expansion $(x+h)^n = x^n + nx^{n-1}\cdot h^1 + n\cdot(n-1)x^{n-2}\cdot h^2 + \cdots$. Subtracting $x^n$
 then dividing by $h$ leaves just the term $nx^{n-1}$ without a power
 of $h$, so the limit, in general, is just this term. That is $[x^n]' =
 nx^{n-1}$.
@@ -328,7 +334,7 @@ general, the power rule applies for any $n$ where $x^n$ is defined.
 - What is the derivative of $f(x) = \sin(x)$? We know that $f'(0)= 1$
   by an earlier example, here we solve in general.
 
-We need to consider $\sin(x+h) - \sin(x)$:
+We need to consider the difference $\sin(x+h) - \sin(x)$:
 
 ```
 ex = expand_trig(sin(x+h) - sin(x))
@@ -336,13 +342,13 @@ ex = expand_trig(sin(x+h) - sin(x))
 
 That used the formula $\sin(x+h) = \sin(x)\cos(h) + \sin(h)\cos(x)$.
 
-We could rearrange this as
+We could then rearrange the secant line slope formula to become:
 
-$$
+$$~
 \cos(x) \cdot \frac{\sin(h)}{h} + \sin(x) \cdot \frac{\cos(h) - 1}{h}
-$$
+~$$
 
-and take a limit (can you see what it will be?) or just let `SymPy` do this work:
+and take a limit. If the answer isn't clear, we can let `SymPy` do this work:
 
 ```
 limit((sin(x+h) - sin(x))/ h, h, 0)
@@ -351,9 +357,9 @@ limit((sin(x+h) - sin(x))/ h, h, 0)
 
 - Let's see what the derivative of $\log(x)$ is. We have
 
-$$
+$$~
 \frac{\log(x+h) - \log(x)}{h} = \frac{1}{h}\log(\frac{x+h}{x}) = \log((1+h/x)^{1/h}).
-$$
+~$$
 
 Earlier we saw that the limit as $u$ goes to $0$ of $f(u) = (1 +
 u)^{1/u}$ is $e$. Re-expressing the above we can get $1/x \cdot
@@ -373,12 +379,12 @@ alert(L"""
 
 There are several different
 [notations](http://en.wikipedia.org/wiki/Notation_for_differentiation)
-for derivatives. Some of this is historical, some just adds
+for derivatives. Some are historical, some just add
 flexibility. We use the prime notation of Lagrange: $f'(x)$, $u'$ and $[\text{expr}]'$,
 where the first emphasizes that the derivative is a function with a
 value at $x$, the second emphasizes the derivative operates on
 functions, the last emphasize that we are taking the derivative of
-some expression.
+some expression (the "rule" part of an unnamed function).
 
 There are many other notations:
 
@@ -387,19 +393,18 @@ $\Delta y/\Delta x$. This notation is very common, and especially
 useful when more than one variable is involved.  `SymPy` uses Leibniz
 notation in some of its output, expressing somethings such as:
 
-$$
+$$~
 f'(x) = \frac{d}{d\xi}(f(\xi)) \big|_{\xi=x}.
-$$
+~$$
 
 The notation -- $\big|$ -- on the right-hand side separates the tasks of finding the
 derivative and evaluating the derivative at a specific value.
 
 - Euler used `D` for the operator `D(f)`. This is appropriated by an
-  operator in the `Roots` package. This use was initially used by
+  operator in the `Roots` package. This was initially used by
   [Argobast](http://jeff560.tripod.com/calculus.html).
 
-- Newton used a "dot" $\dot{x}(t)$, which is still widely used in physics to indicate  a derivative in
-time.
+- Newton used a "dot" $\dot{x}(t)$, which is still widely used in physics to indicate  a derivative in time.
 
 
 
@@ -412,29 +417,29 @@ time.
 We could proceed in a similar manner to find other derivatives, but
 let's not. If we have a function $f(x) = x^5 \sin(x)$, it would be
 nice to leverage our previous work on the derivatives of $f(x) =x^5$
-and $g(x) = \sin(x)$.
+and $g(x) = \sin(x)$, rather than derive an answer from scratch. 
 
 
 As with limits and continuity, it proves very useful to consider rules
 that make the process of finding derivatives of combinations of
-functions matter of combining derivatives of the individual functions.
+functions a matter of combining derivatives of the individual functions in some manner.
 
 ### Sum rule
 
-Let's consider $k(x) = a\cdot f(x) + b\cdot g(x)$, what is its derivative?
+Let's consider $k(x) = a\cdot f(x) + b\cdot g(x)$, what is its derivative? That is, in terms of $f$, $g$ and their derivatives, can we express $k'(x)$?
 
 We can rearrange $(k(x+h) - k(x))$ as follows:
 
-$$
+$$~
 (a\cdot f(x+h) + b\cdot g(x+h)) - (a\cdot f(x) + b \cdot g(x)) =
 a\cdot (f(x+h) - f(x)) + b \cdot (g(x+h) - g(x)).
-$$
+~$$
 
 Dividing by $h$, we see that this becomes
 
-$$
+$$~
 a\cdot \frac{f(x+h) - f(x)}{h} + b \cdot \frac{g(x+h) - g(x)}{h} \rightarrow a\cdot f'(x) + b\cdot g'(x).
-$$
+~$$
 
 
 
@@ -449,7 +454,7 @@ well. Here we define to symbolic functions `u` and `v` and let `SymPy`
 derive a formula for the derivative of a product of functions:
 
 ```
-u,v = symbols("u,v", cls=SymFunction) # make symbolic functions
+u,v = SymFunction("u,v") # make symbolic functions
 f(x) = u(x) * v(x)
 limit((f(x+h) - f(x))/h, h, 0)
 ```
@@ -492,9 +497,9 @@ In general, we want to express $\Delta f / \Delta x$ in a form so that we can ta
 
 But what do we know? We know $\Delta g / \Delta x$ and $\Delta f/\Delta y$. Using $y=g(x)$, this suggests that we might have luck with the right side of this equation:
 
-$$
+$$~
 \frac{\Delta f}{\Delta x} = \frac{\Delta f}{\Delta y} \cdot \frac{\Delta y}{\Delta x}.
-$$
+~$$
 
 
 Interpreting this, we get the *average* rate of change in the
@@ -507,9 +512,9 @@ $y$, $\Delta f/ \Delta y$.
 Re-expressing using derivative notation with $h$ would be:
 
 
-$$
+$$~
 \frac{f(g(x+h)) - f(g(x))}{h} = \frac{f(g(x+h)) - f(g(x))}{g(x+h) - g(x)} \cdot \frac{g(x+h) - g(x)}{h}.
-$$
+~$$
 
 The left hand side will converge to the derivative of $u(x)$ or $[f(g(x))]'$.
 
@@ -520,7 +525,7 @@ It isn't obvious, but the left part of the right side has the limit
 $f'(g(x))$. This would be clear if *only* $g(x+h) = g(x) + h$, for
 then the expression would be exactly the limit expression with
 $c=g(x)$. But, alas, except to some hopeful students and some special
-cases, it is definitely not the case in general that $g(x+h) = g(x) + h$ -- that
+cases, it is definitely not the case in general that $g(x+h) = g(x) + h$---that
 right parentheses actually means something. However, it is *nearly*
 the case that $g(x+h) = g(x) + kh$ for some $k$ and this can be used to formulate a
 proof (one of the two detailed
@@ -544,9 +549,9 @@ To see that this works in our specific case, we assume the general
 power rule that $[x^n]' = n x^{n-1}$ to get: $g'(x) = (1/2)x^{-1/2}$,
 $f'(x)=2x$, and $f'(g(x)) = 2(\sqrt{x})$. Together, the product is:
 
-$$
+$$~
 2\sqrt{x} \cdot (1/2) 1/\sqrt{x} = 1
-$$
+~$$
 
 Which is the same as the derivative of $x$ found by first evaluating the composition.
 
@@ -556,38 +561,38 @@ Which is the same as the derivative of $x$ found by first evaluating the composi
 
 This is a product of functions, using $[u\cdot v]' = u'v + uv'$ we get:
 
-$$
+$$~
 5x^4 \cdot \sin(x) + x^5 \cdot \cos(x)
-$$
+~$$
 
 - Find the derivative of $x^5 / \sin(x)$.
 
 This is a quotient of functions. Using $[u/v]' = (u'v - uv')/v^2$ we get
 
-$$
+$$~
 (5x^4 \cdot \sin(x) - x^5 \cdot \cos(x)) / (\sin(x))^2.
-$$
+~$$
 
 - Find the derivative of $\sin(x^5)$. This is a composition of
   functions $u(v(x))$ with $v(x) = x^5$. The chain rule says find the
   derivative of $u$ ($\cos(x)$) and evaluate at $v(x)$ ($\cos(x^5)$)
   then multiply by the derivative of $v$:
 
-$$
+$$~
 \cos(x^5) \cdot 5x^4.
-$$
+~$$
 
 - Similarly, but differently, find the derivative of $\sin(x)^5$. Now
   $v(x) = \sin(x)$, so the derivative of $u(x)$ ($5x^4$) evaluated at
   $v(x)$ is $5(\sin(x))^4$ so multiplying by $v'$ gives:
 
-$$
+$$~
 5(\sin(x))^4 \cdot \cos(x)
-$$
+~$$
 
 
 We can verify these with `SymPy`. Rather than take a limit, we will
-use `SymPy`' `diff ` function to compute derivatives.
+use `SymPy`'s `diff` function to compute derivatives.
 
 ```
 diff(x^5 * sin(x))
@@ -616,34 +621,32 @@ expression, or `diff(f)`, where `f` is the name of a univariate function.
 
 - Let's see that the derivative of $e^x$ is just itself.
 
-$$
+$$~
 \frac{e^{x+h} - e^x}{h} = \frac{e^x \cdot(e^h -1)}{h}.
-$$
+~$$
 
 If we know that $\lim_{h \rightarrow 0}(e^h - 1)/h = 1$, we get
 $[e^x]' = e^x$, that is it is a function satisfying $f'=f$.
 
 
 
-- Suppose we knew that $\log(x)$ had derivative of $1/x$, but didn't
-know the derivative of $e^x$. From their inverse relation, we have: $x
-= \log(e^x)$, so taking derivatives of both sides would yield:
+- Suppose we knew that $\log(x)$ had derivative of $1/x$, but didn't know the derivative of $e^x$. From their inverse relation, we have: $x=\log(e^x)$, so taking derivatives of both sides would yield:
 
-$$
+$$~
 1 = (\frac{1}{e^x}) \cdot [e^x]'.
-$$
+~$$
 
 Or solving, $[e^x]' = e^x$. This is a general strategy to find the
 derivative of an *inverse* function.
 
 
 
-- The general product rule: When $n$ is not a positive integer we can re-express the power using $e$:
+- The general product rule:  For any $n$---not just integer values--- we can re-express $x^n$  using $e$:
 $x^n = e^{n \log(x)}$. Now the chain rule can be applied:
 
-$$
+$$~
 [x^n]' = [e^{n\log(x)}]' = e^{n\log(x)} \cdot (n \frac{1}{x}) = n x^n \cdot \frac{1}{x} = n x^{n-1}.
-$$
+~$$
 
 #### Rules of derivatives and some samples
 
@@ -667,7 +670,7 @@ table(d)
 This table gives some useful derivatives:
 
 ```
-fn = [L"$x^n$,  all $n$",
+fn = [L"x^n \text{ all } n",
 L"e^x",
 L"\log(x)",
 L"\sin(x)",
@@ -697,10 +700,10 @@ Find the second derivative of $e^{-x^2}$.
 
 We need the chain rule *and* the product rule:
 
-$$
+$$~
 [e^{-x^2}]'' = [e^{-x^2} \cdot (-2x)]' = (e^{-x^2} \cdot (-2x) \cdot(-2x) + e^{-x^2} \cdot (-2)) =
 e^{-x^2}(4x^2 - 2).
-$$
+~$$
 
 This can be verified:
 
@@ -718,20 +721,20 @@ Having to iterate the use of `diff` is cumbersome. An alternate notation is eith
 
 An approximate derivative can be used. By approximating the limit of the secant line with a value for a small, but positive, $h$, we get an approximation. That is
 
-$$
+$$~
 f'(x) \approx \frac{f(x+h) - f(x)}{h}.
-$$
+~$$
 
 This is the forward-difference approximation. The central difference approximation looks both ways:
 
-$$
-f'(x) \approx \frac{f(x+h) - f(x-h)}{(2h)}.
-$$
+$$~
+f'(x) \approx \frac{f(x+h) - f(x-h)}{2h}.
+~$$
 
 Though in general they are different, they are both
 approximations. The central difference is a bit more accurate for the
 same size $h$. However, both are susceptible to round-off errors. The
-numerator is a subtraction of like-size numbers -- a perfect
+numerator is a subtraction of like-size numbers---a perfect
 opportunity to lose precision. As such there is a balancing act: if
 $h$ is too small the round-off errors are problematic, if $h$ is too
 big, the approximation to the limit is not good. For the forward
@@ -752,7 +755,8 @@ approx = (f(c+h) - f(c)) / h
 We can compare to the actual with:
 
 ```
-actual = diff(f(x),x) |> subs(x,c) |> N
+df = diff(f(x), x)
+actual = N(df(c))
 abs(actual - approx)
 ```
 
@@ -771,15 +775,16 @@ abs(actual - approx)
 There are some other ways to compute derivatives numerically that give
 much more accuracy at the expense of some increased computing
 time. Automatic differentiation is the general name for a few
-different approaches. These approaches promise less complexity -- in
-some cases -- than symbolic derivatives and more accuracy than
+different approaches. These approaches promise less complexity---in
+some cases---than symbolic derivatives and more accuracy than
 approximate derivatives. In fact the accuracy is on the order of
 machine precision.
 
-The `Roots` package has an operator `D` which implements a form of
-automatic differentiation. The notation used is `D(f)` to find the
-first derivative, and `D(f,k)` to return the $k$th. These return
-anonymous functions which can be passed directly to another function, or assigned a name.
+The `Roots` package has an operator `D` which uses an implementation
+of automatic differentiation provided by the `ForwardDiff`
+package. The notation used is `D(f)` to find the first derivative, and
+`D(f,k)` to return the $k$th. These return anonymous functions which
+can be passed directly to another function, or assigned a name.
 
 
 Here we see the error in estimating $f'(1)$ for the $f(x) = e^{-x^2/2}$.
@@ -794,10 +799,7 @@ In this case, it is exact.
 
 
 The `D` operator is only defined for most functions, not all. (The
-`diff` operator of `SymPy` is somewhat similar in that respect.) In
-particular, `D` can *not* be used to differentiate functions returned
-by `D`. This might be desirable for computing second derivatives, but
-won't work for technical reasons. Use `D(f,2)` instead.
+`diff` operator of `SymPy` is somewhat similar in that respect.) 
 
 ##### Example
 
@@ -821,33 +823,113 @@ ds_value, fwd, ds_value - fwd
 Finally, `SymPy` gives an exact value we use to compare:
 
 ```
-x = symbols("x")
+@vars x
 actual = diff(f(x), x) |> subs(x, PI/4) |> N
 actual - ds_value, actual - fwd
 ```
 
+#### Convenient notation
+
+`Julia` allows the possibility of extending functions to different types. Out of the box, the `'` notation is not employed for functions, but is used for matrices. It is used in postfix position, as with `A'`. We can define it to do the same thing as `D` for functions and then, we can evaluate derivatives with the familiar `f'(x)`. Ignoring the warning, here is how:
+
+```
+Base.ctranspose(f::Function) = D(f)
+```
+
+Then, we have, for example:
+
+```
+f(x) = sin(x)
+f'(pi), f''(pi)
+```
+
 ##### Example
 
-Suppose our task is to find a zero of the second derivative of $f(x) = e^{-x^2/2}$ in $[0, 10]$, a known bracket.
+Suppose our task is to find a zero of the second derivative of $f(x) =
+e^{-x^2/2}$ in $[0, 10]$, a known bracket. The `D` function takes a second argument to indicate the order of the derivative (e.g., `D(f,2)`), but we use the more familiar notation:
 
-For this, we can use the `fzero` function of the `Roots` package. For
-that we compose the output of `D(f,2)` with `fzero`:
 
 ```
 f(x) = exp(-x^2/2)
-fzero(D(f,2), 0, 10)
+fzero(f'', 0, 10)
 ```
 
+We pass in the function object, `f''`, and not the evaluated function.
+
 ## Questions
+
+###### Question
+
+The derivative at $c$ is the slope of the tangent line at $x=c$. Answer the following based on this graph:
+
+```
+fn = x -> -x*exp(x)*sin(pi*x)
+plot(fn, 0, 2)
+```
+
+At which of these points $c= 1/2, 1, 3/2$ is the derivative negative?
+
+```
+choices = [L"1/2", L"1", L"3/2"]
+ans = 1
+radioq(choices, ans, keep_order=true)
+```
+
+Which value looks bigger from reading the graph:
+
+```
+choices = [L"f(1)", L"f(3/2)"]
+ans = 2
+radioq(choices, ans, keep_order=true)
+```
+
+At $0.708 \dots$ and $1.65\dots$ the derivative has a common value. What is it?
+
+```
+numericq(0, 1e-2)
+```
+
+###### Question
+
+Consider the graph of the `airyai` function over $[-5, 5]$.
+
+```nocode
+plot(airyai, -5, 5)
+```
+
+At $x = -2.5$  the derivative is postive or negative?
+
+```
+choices = ["positive", "negative"]
+ans = 1
+radioq(choices, ans, keep_order=true)
+```
+
+
+At $x=0$ the derivative is postive or negative?
+
+```
+choices = ["positive", "negative"]
+ans = 2
+radioq(choices, ans, keep_order=true)
+```
+
+At $x = 2.5$  the derivative is postive or negative?
+
+```
+choices = ["positive", "negative"]
+ans = 2
+radioq(choices, ans, keep_order=true)
+```
 
 ###### Question
 
 Compute the derivative of $e^x$ using `limit`. What do you get?
 
 ```
-choices = [q"e^x", q"x^e", q"(e-1)x^e", q"e x^(e-1)", "something else"]
+choices = [L"e^x", L"x^e", L"(e-1)x^e", L"e x^{(e-1)}", "something else"]
 ans = 1
-radioq(choices, ans)
+radioq(choices, ans, keep_order=true)
 ```
 
 ###### Question
@@ -855,9 +937,9 @@ radioq(choices, ans)
 Compute the derivative of $x^e$ using `limit`. What do you get?
 
 ```
-choices = [q"e^x", q"x^e", q"(e-1)x^e", q"e x^(e-1)", "something else"]
+choices = [L"e^x", L"x^e", L"(e-1)x^e", L"e x^{(e-1)}", "something else"]
 ans = 5
-radioq(choices, ans)
+radioq(choices, ans, keep_order=true)
 ```
 
 ###### Question
@@ -865,18 +947,18 @@ radioq(choices, ans)
 Compute the derivative of $e^{e\cdot x}$ using `limit`. What do you get?
 
 ```
-choices = [q"e^x", q"x^e", q"(e-1)x^e", q"e x^(e-1)", q"e \cdot e^{e\cdot x}", "something else"]
+choices = [L"e^x", L"x^e", L"(e-1)x^e", L"e x^{(e-1)}", L"e \cdot e^{e\cdot x}", "something else"]
 ans = 5
-radioq(choices, ans)
+radioq(choices, ans, keep_order=true)
 ```
 
 ###### Question
 
 In the derivation of the derivative of $\sin(x)$, the following limit is needed:
 
-$$
+$$~
 L = \lim_{h \rightarrow 0} \frac{\cos(h) - 1}{h}.
-$$
+~$$
 
 This is
 
@@ -979,7 +1061,7 @@ radioq(choices, ans)
 
 ###### Question
 
-Which equation below is $f(x) = \sin(k\cdot x)$ a solution ($k > 1$)?
+Which equation below is $f(x) = \sin(k\cdot x)$ a solution of ($k > 1$)?
 
 ```
 choices = [
@@ -993,7 +1075,7 @@ radioq(choices, ans)
 
 ###### Question
 
-Let $f(x) = e^{k\cdot x}$, $k > 1$. Which equation below is $f(x)$ a solution?
+Let $f(x) = e^{k\cdot x}$, $k > 1$. Which equation below is $f(x)$ a solution of?
 
 
 ```
@@ -1044,16 +1126,15 @@ numericq(val)
 
 ###### Question
 
-The `D` operator from the `Roots` package works only for the basic
-algebraic functions. In particular, it will not work with `Julia`'s
-`airy` function. To find numeric derivatives there, we can use the
+For `Julia`'s
+`airyai` function find a numeric derivative using the
 forward difference. For $c=3$ and $h=10^{-8}$ find the forward
-difference approximation to $f'(3)$ for the `airy` function.
+difference approximation to $f'(3)$ for the `airyai` function.
 
 ```
 h = 1e-8
 c = 3
-val = (airy(c+h) - airy(c))/h
+val = (airyai(c+h) - airyai(c))/h
 numericq(val)
 ```
 

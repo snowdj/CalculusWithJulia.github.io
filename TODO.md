@@ -1,8 +1,21 @@
-- finish up
+# (PART) The derivative of a function {-}
+for Rbookdown
+
+
+
+
+# v0.6
+
+✓ QuadGK
+✓ SymPy fix
+bookdown prot
+✓ Roots and polynomials
+
+✓ - finish up
 - trig integrals?
-- polar coordinates
+✓ - polar coordinates
 
-
+✓ Nice historical problems here http://www.ams.org/samplings/feature-column/fc-2016-05
 
 
 
@@ -29,6 +42,8 @@
 
 ### limits
 
+* continuity section is underwhelming...
+
 ### derivatives
 
 * implicit differentiation needs problems!!!
@@ -36,11 +51,20 @@
 ### integration
 
 
+### ODEs
+
+Add bit on ODEs, simple ones; Euler's method
+
+
+--> This is phase 2 and *only* if phase 1 gains any traction <--
+
 ### series
 
 ALL
 
 ### Vector calc
 
-This is phase 2 and *only* if phase 1 gains any traction
+ALL
+
+
 

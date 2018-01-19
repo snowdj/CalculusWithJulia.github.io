@@ -1,15 +1,12 @@
 # Volumes by slicing
 
-
+```nocode, noout
+using Plots
+plotly()
+using QuadGK
 ```
-using WeavePynb
-out = gif_to_data("figures/michelin-man.jpg", """
 
-Hey Michelin Man, how much does that costume weigh?
-
-""")
-WeavePynb.HTMLoutput(out)
-```
+{{{michelin_man}}}
 
 An ad for a summer job says work as the Michelin Man! Sounds
 promising, but how much will that costume weigh? A very hot summer may
@@ -27,9 +24,9 @@ A back-of-the envelope calculation would start by
 
 Then the volume would be found by adding:
 
-$$
+$$~
 V = \pi \cdot r_1^2 \cdot h_1 + \pi \cdot r_2^2 \cdot h_2 + \cdot + \pi \cdot r_n^2 \cdot h_n.
-$$
+~$$
 
 The weight would come by multiplying the volume by some appropriate density.
 
@@ -41,7 +38,7 @@ In fact, we have in general
 
 > **Volume of a figure with a known cross section**: The volume of a solid with known cross-sectional
 > area $CA(x)$ from $x=a$ to $x=b$ is given by
-> $$ V = \int_a^b CA(x) dx. $$
+> $$~ V = \int_a^b CA(x) dx. ~$$
 > This assumes $CA(x)$ is integrable.
 
 This formula is derived by approximating the volume by "slabs" with
@@ -51,7 +48,7 @@ the cross-sectional area is just that of a circle, or $\pi r^2$.
 
 ## Solids of revolution
 
-We begin with some examples of a special class of solids -- solids of
+We begin with some examples of a special class of solids---solids of
 revolution. These have an axis of symmetry from which the slabs are
 then just circular disks.
 
@@ -73,9 +70,9 @@ WeavePynb.HTMLoutput(out)
 If $r(x)$ is the radius as a function of $x$, then the cross sectional
 area is $\pi r(x)^2$ so the volume is given by:
 
-$$
+$$~
 V = \int_a^b \pi r(x)^2 dx.
-$$
+~$$
 
 ```
 note(L"""
@@ -88,28 +85,29 @@ The formula is for a rotation around the $x$-axis, but can easily be generalized
 
 For a numeric example, we consider the original Red
 [Solo](http://en.wikipedia.org/wiki/Red_Solo_Cup) Cup. The dimensions
-of the cup were basically: a top diameter of $d_1 = 3~ 3/4$
-inches, a bottom diameter of $d_0 = 2~ 1/2$ inches and a height of $h =
-4~ 3/4$ inches.
+of the cup were basically: a top diameter of $d_1 = 3~ \frac{3}{4}$
+inches, a bottom diameter of $d_0 = 2~ \frac{1}{2}$ inches and a height of $h =
+4~ \frac{3}{4}$ inches.
 
 The central axis is straight down. If we rotate the cup so this is the $x$-axis, then we can get
 
-$$
+$$~
 r(x) = \frac{d_0}{2} + \frac{d_1/2 - d_0/2}{h}x = \frac{5}{4} + \frac{5}{38}x
-$$
+~$$
 
 The volume in cubic inches will be:
 
-$$
+$$~
 V = \int_0^h \pi r(x)^2 dx
-$$
+~$$
 
 This is
 
 ```
+using QuadGK
 d0, d1, h = 2.5, 3.75, 4.75
 rad(x) = d0/2 + (d1/2 - d0/2)/h * x
-vol, _ = quadgk(x -> pi * rad(x)^2, 0, h)
+vol, _ = QuadGK.quadgk(x -> pi * rad(x)^2, 0, h)
 ```
 
 So $36.9 \text{in}^3$. How many ounces is that? It is useful to know
@@ -125,7 +123,7 @@ vol / 231 * 128
 
 Full it is about $20$ ounces, though this doesn't really account for the volume taken up by the bottom of the cup, etc.
 
-Before Solo "squared" the cup, the Solo cup had markings that --  [some thought](http://www.snopes.com/food/prepare/solocups.asp) -- indicated certain volume amounts.
+Before Solo "squared" the cup, the Solo cup had markings that---[some thought](http://www.snopes.com/food/prepare/solocups.asp)---indicated certain volume amounts.
 
 ```
 out = gif_to_data("figures/red-solo-cup.jpg", "Markings on the red Solo cup indicated various volumes")
@@ -142,7 +140,7 @@ So we need to solve $v \cdot (231/128) = \int_0^h\pi r(x)^2 dx$ for $h$ when $v=
 Let's express volume as a function of $h$:
 
 ```
-Vol(h) = quadgk(x -> pi * rad(x)^2, 0, h)[1]
+Vol(h) = QuadGK.quadgk(x -> pi * rad(x)^2, 0, h)[1]
 ```
 
 Then to solve we have:
@@ -177,7 +175,7 @@ y/h)$. This gives the well-known volume of a cone:
 
 ```
 using SymPy
-r,h,x,y = symbols("r,h,x,y")
+@vars r h x y
 R = r*(1 - y/h)
 integrate(pi*R^2, (y, 0, h))
 ```
@@ -190,11 +188,11 @@ $V = \pi/3\cdot h^3\tan(\theta)^2$.
 
 ##### Example
 
-[Gabriel's](http://tinyurl.com/8a6ygv) horn is a geometric figure of mathematics -- but not the real world -- which has infinite height, but not volume! The figure is found by rotating the curve $y=1/x$ around the $x$ axis from $1$ to $\infty$. If the volume formula holds, what is the volume of this "horn?"
+[Gabriel's](http://tinyurl.com/8a6ygv) horn is a geometric figure of mathematics---but not the real world---which has infinite height, but not volume! The figure is found by rotating the curve $y=1/x$ around the $x$ axis from $1$ to $\infty$. If the volume formula holds, what is the volume of this "horn?"
 
 ```
 rad(x) = 1/x
-vol, _ = quadgk(x -> pi*rad(x)^2, 1, Inf)
+vol, _ = QuadGK.quadgk(x -> pi*rad(x)^2, 1, Inf)
 ```
 
 That is a value very reminiscent of $\pi$, which it is as $\int_1^\infty 1/x^2 dx = -1/x\big|_1^\infty=1$.
@@ -216,12 +214,12 @@ A movie studio hand is asked to find a prop vase to be used as a
 upcoming scene. The dimensions specified are for the outside diameter
 in centimeters and are given by
 
-$$
+$$~
 d(h) = \begin{cases}
 2 \sqrt{26^2 - (h-20)^2} & 0 \leq h \leq 44\\
 20 \cdot e^{-(h - 44)/10} & 44 < h \leq 50.
 \end{cases}
-$$
+~$$
 
 If the vase were solid, what would be the volume?
 
@@ -235,7 +233,7 @@ rad(h) = d(h)/2
 The volume in cm$^3$ is then:
 
 ```
-V, _ = quadgk(h -> pi * rad(h)^2, 0, 50)
+V, _ = QuadGK.quadgk(h -> pi * rad(h)^2, 0, 50)
 ```
 
 For the actual shoot, the vase is to be filled with ash, to simulate a
@@ -246,7 +244,7 @@ centimeter thick
 We need to subtract $0.5$ from the radius and `a` then recompute:
 
 ```
-V_int, _ = quadgk(h -> pi * (rad(h) - 1/2)^2, 1/2, 50)
+V_int, _ = QuadGK.quadgk(h -> pi * (rad(h) - 1/2)^2, 1/2, 50)
 ```
 
 A liter of volume is $1000 \text{cm}^3$. So this is about $68$ liters, or more than 15
@@ -263,9 +261,9 @@ V - V_int
 
 Returning to the Michelin Man, in our initial back-of-the-envelope calculation we didn't account for the fact that a tire isn't a disc, as it has its center cut out. Returning, suppose $R_i$ is the outer radius and $r_i$ the inner radius. Then each tire has volume
 
-$$
+$$~
 \pi R_i^2 h_i - \pi r_i^2 h_i = \pi (R_i^2 - r_i^2) h_i.
-$$
+~$$
 
 Rather than use $\pi r(x)^2$ for a cross section, we would use $\pi (R(x)^2 - r(x)^2)$.
 
@@ -274,9 +272,9 @@ $CA(x) = \pi(R(x)^2 - r(x)^2)$.
 
 Then the volume for the solid of revolution whose cross sections are washers would be:
 
-$$
+$$~
 V = \int_a^b \pi \cdot (R(x)^2 - r(x)^2) dx.
-$$
+~$$
 
 ##### Example
 
@@ -284,9 +282,9 @@ An artist is working with a half-sphere of material, and wishes to
 bore out a conical shape. What would be the resulting volume, if the
 two figures are modeled by
 
-$$
+$$~
 R(x) = \sqrt{1^2 - (x-1)^2}, \quad r(x) = x,
-$$
+~$$
 
 with $x$ ranging from $x=0$ to $1$?
 
@@ -295,7 +293,7 @@ The answer comes by integrating:
 ```
 Rad(x) = sqrt(1 - (x-1)^2)
 rad(x) = x
-V, _ = quadgk(x -> pi*(Rad(x)^2 - rad(x)^2), 0, 1)
+V, _ = QuadGK.quadgk(x -> pi*(Rad(x)^2 - rad(x)^2), 0, 1)
 ```
 
 ## Solids with known cross section
@@ -311,11 +309,11 @@ The difference, of course, is that cross sections now have area $d^2$, as oppose
 ```
 d0, d1, h = 2.5, 3.75, 4.75
 d(x) = d0 + (d1 - d0)/h * x
-vol, _ = quadgk(x -> d(x)^2, 0, h)
+vol, _ = QuadGK.quadgk(x -> d(x)^2, 0, h)
 vol / 231 * 128
 ```
 
-This shape would have more volume -- the cross sections are bigger. Presumably
+This shape would have more volume---the cross sections are bigger. Presumably
 the dimensions have changed. Without going out and buying a cup, let's
 assume the cross-sectional diameter remained the same, not the
 diameter. This means the largest dimension is the same. The cross
@@ -344,21 +342,21 @@ such a cone. After possibly reorienting the cone in space so the base
 is at $u=0$ and the apex at $u=h$ the volume of the cone can be found
 from:
 
-$$
+$$~
 V = \int_0^h C(u) du.
-$$
+~$$
 
 The cross sectional area $C(u)$ satisfies a formula in terms of $C(0)$, the area of the base:
 
-$$
+$$~
 C(u)  = C(0) \cdot (1 - \frac{u}{h})^2
-$$
+~$$
 
 So the integral becomes:
 
-$$
+$$~
 V = \int_0^h C(u) du = C(0) \int_0^h (1 - \frac{u}{h})^2 du = C(0) \int_0^1 v^2 \frac{1}{h} dv = C(0) \frac{h}{3}.
-$$
+~$$
 
 This gives a general formula for the volume of such cones. 
 
@@ -378,12 +376,12 @@ this is a trivial observation, as the functions giving the
 cross-sectional area are identical. Still, it can be surprising.
 Consider a sphere with an interior cylinder bored out of it.  (The
 [Napkin](http://tinyurl.com/o237v83) ring problem.) The bore has
-height $h$ -- for larger radius spheres this means very wide bores.
+height $h$---for larger radius spheres this means very wide bores.
 
-The following illustrates $R=5$ and $h=8$.
 
-```
-using Gadfly
+```nocode
+#The following illustrates $R=5$ and $h=8$.
+
 R =5; h1 = 2*4
 
 theta = asin(h1/2/R)
@@ -391,18 +389,24 @@ thetas = linspace(-theta, theta)
 ts = linspace(-pi, pi)
 y = h1/4
 
-p = plot(
-layer(x=R*cos(ts), y=R*sin(ts), Geom.line(preserve_order=true)),
-layer(x=[R*cos(theta), R*cos(theta)], y=[h1/2, -h1/2], Geom.line, Theme(default_color=color("orange"))),
-layer(x=R*cos(thetas), y=R*sin(thetas),  Geom.line(preserve_order=true), Theme(default_color=color("orange"))),
-layer(x=[R*cos(theta), sqrt(R^2 - y^2)], y=[y, y], Geom.line(preserve_order=true), Theme(default_color=color("orange"))),
-layer(x=[0, R*cos(theta)], y=[0,0], Geom.line(preserve_order=true), Theme(default_color=color("red"))),
-layer(x=[0, R*cos(theta)], y=[0,h1/2], Geom.line(preserve_order=true), Theme(default_color=color("red"))),
-layer(x=[.45, R*cos(theta)-.6, 1.5], y=[2/3, h1/4, 1.5*tan(theta)], label=["sqrt(R^2-(h/2)^2)", "h/2", "R"],Geom.label),
-Guide.xticks(ticks=[-5,0,5]),Guide.yticks(ticks=[-5,0,5])
-)
-Outputonly(p)
+p = plot!(legend=false);
+plot!(p, R*cos(ts), R*sin(ts));
+plot!(p, R*cos(thetas), R*sin(thetas), color=:orange);
+
+plot!(p, [R*cos(theta), R*cos(theta)], [h1/2, -h1/2], color=:orange);
+plot!(p, [R*cos(theta), sqrt(R^2 - y^2)], [y, y], color=:orange)
+
+plot!(p, [0, R*cos(theta)], [0,0], color=:red);
+plot!(p,[ 0, R*cos(theta)], [0,h1/2], color=:red);
+
+annotate!(p, [(.5, -2/3, "sqrt(R^2- (h/2)^2"),
+              (R*cos(theta)-.6, h1/4, "h/2"),
+              (1.5, 1.75*tan(theta), "R")])
+
+p
+
 ```
+
 
 The small orange line is rotated, so using the washer method we get the cross sections given by $\pi(r_o^2 - r_i^2)$, the outer and inner radii, as a function of $y$.
 
@@ -410,11 +414,11 @@ The outer radii has points $(x,y)$ satisfying $x^2 + y^2 = R^2$, so is $\sqrt{R^
 
 Thus the cross sectional area is
 
-$$
+$$~
 \pi( (\sqrt{R^2 - y^2})^2 - (\sqrt{R^2 - (h/2)^2})^2 )
 = \pi ((R^2 - y^2) - (R^2 - (h/2)^2))
 = \pi ((\frac{h}{2})^2 - y^2)
-$$
+~$$
 
 As this does not depend on $R$, and the limits of integration would
 always be $-h/2$ to $h/2$ by Cavalieri's principle, the volume of the
@@ -434,7 +438,7 @@ $A(F)$ is the area of the plane figure. In short, the distance
 traveled by the centroid times the area.
 
 This can make some computations trivial. For example, we can make
-torus (or donut) by rotating the circle $(x-2)^2 + y^2 = 1$ about the
+a torus (or donut) by rotating the circle $(x-2)^2 + y^2 = 1$ about the
 $y$ axis. As the centroid is clearly $(2, 0)$, with $r=2$ in the above
 formula, and the area of the circle is $\pi 1^2$, the volume of the
 donut is $2\pi(2)(\pi) = 4\pi^2$.
@@ -471,7 +475,7 @@ Two facts are useful:
 ```
 gft = 7.48052
 rad(h) = 5 + (3/15)*h
-a,err = quadgk(h -> pi*rad(h)^2, 0, 15)
+a,err = QuadGK.quadgk(h -> pi*rad(h)^2, 0, 15)
 val = a*gft
 numericq(val, 1e1)
 ```
@@ -499,15 +503,15 @@ pint glass is roughly $450$ cm$^3$.)
 
 Let two glasses be given as follows. A typical pint glass with linearly increasing radius:
 
-$$
+$$~
 r(h) = 3 + \frac{1}{5}h, \quad 0 \leq h \leq b;
-$$
+~$$
 
-and a curved edge one:
+and a curved-edge one:
 
-$$
+$$~
 s(h) = 3 + \log(1 + h), \quad 0 \leq h \leq b
-$$
+~$$
 
 The following functions find the volume as a function of height, $h$:
 
@@ -515,8 +519,8 @@ The following functions find the volume as a function of height, $h$:
 ```
 r1(h) = 3 + h/5
 s1(h) = 2 + log(1 + h)
-r_vol(h) = quadgk(x -> pi*r1(x)^2, 0, h)[1]
-s_vol(h) = quadgk(x -> pi*s1(x)^2, 0, h)[1]
+r_vol(h) = QuadGK.quadgk(x -> pi*r1(x)^2, 0, h)[1]
+s_vol(h) = QuadGK.quadgk(x -> pi*s1(x)^2, 0, h)[1]
 ```
 
 * For the straight-sided glass find $h$ so that the volume is $450$.
@@ -592,9 +596,9 @@ A right [pyramid](http://en.wikipedia.org/wiki/Pyramid_%28geometry%29) has its a
 
 Will this integral give the volume:
 
-$$
+$$~
 V = \int_0^h w^2 (1 - \frac{y}{h})^2 dy?
-$$
+~$$
 
 ```
 yesnoq("yes")
@@ -620,7 +624,7 @@ axis around the $x$ axis. What is the volume of this ellipsoid? Find it numerica
 
 ```
 f(x) = 3*sqrt( 1 - (x/2)^2 )
-val, _ = quadgk(x -> pi * f(x)^2, -2, 2)
+val, _ = QuadGK.quadgk(x -> pi * f(x)^2, -2, 2)
 numericq(val)
 ```
 
@@ -650,7 +654,7 @@ axis. Find the volume of the solid.
 Ra(x) = sqrt(x)
 ra(x) = 1
 a,b=1,2
-val, _ = quadgk(x -> pi * (Ra(x)^2 - ra(x)^2), a,b)
+val, _ = QuadGK.quadgk(x -> pi * (Ra(x)^2 - ra(x)^2), a,b)
 numericq(val)
 ```
 
@@ -666,7 +670,7 @@ plot([x->x^3 - 1, x -> x-1], 0, 1)
 Ra(y) = cbrt(y+1)
 ra(y) = y + 1
 a,b = 0, 1
-val, _ = quadgk(x -> pi * (Ra(x)^2 - ra(x)^2), a,b)
+val, _ = QuadGK.quadgk(x -> pi * (Ra(x)^2 - ra(x)^2), a,b)
 numericq(val)
 ```
 
@@ -679,7 +683,7 @@ Rotate the region bounded by $y=e^x$, the line $x=\log(2)$ and the first quadran
 ```
 a, b = 0, exp(log(2))
 ra(y) = log(2) - log(y)
-val, _ = quadgk(y -> pi * ra(y)^2, a, b)
+val, _ = QuadGK.quadgk(y -> pi * ra(y)^2, a, b)
 numericq(val)
 ```
 
@@ -717,7 +721,7 @@ With this, find the volume.
 
 ```
 a, b = 0, sqrt(2)
-val, _ = quadgk(u -> pi*rad(u)^2, a, b)
+val, _ = QuadGK.quadgk(u -> pi*rad(u)^2, a, b)
 numericq(val)
 ```
 
@@ -729,6 +733,6 @@ Repeat (find the volume) only this time with the function $f(x) = x^{20}$.
 f(x) = x^20
 xval(u) = fzero(x -> u*sin(theta) - 1/tan(theta) * (x - u*cos(theta)) - f(x), 0,sqrt(2))
 rad(u) = sqrt((u*cos(theta) - xval(u))^2 + (u*sin(theta) - f(xval(u)))^2)
-val, _ = quadgk(u -> pi*rad(u)^2, a, b)
+val, _ = QuadGK.quadgk(u -> pi*rad(u)^2, a, b)
 numericq(val)
 ```

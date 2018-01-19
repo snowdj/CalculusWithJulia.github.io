@@ -1,8 +1,13 @@
 # Related rates
 
+```nocode, noout
+using Plots
+plotly()
+```
+
 Related rates problems involve two (or more) unknown quantities that
 are related through an equation. As the two variables depend on each
-other, also so do their rates - change with respect to some variable
+other, also so do their rates---change with respect to some variable
 which is often time, though exactly how remains to be
 discovered. Hence the name "related rates."
 
@@ -21,32 +26,33 @@ The following is a typical "book" problem:
 
 Here we know $A = w \cdot h$ and we know some things about how $w$ and
 $h$ are related *and* about the rate of how both $w$ and $h$ grow in
-time $t$. That means that we could expression this growth in terms of some functions $w(t)$ and $h(t)$, then we can figure out that the area -- as a function of $t$ -- will be expressed as:
+time $t$. That means that we could express this growth in terms of
+some functions $w(t)$ and $h(t)$, then we can figure out that the area---as a function of $t$---will be expressed as:
 
-$$
+$$~
 A(t) = w(t) \cdot h(t).
-$$
+~$$
 
 We would get by the product rule that the *rate of change* of area with respect to time, $A'(t)$ is just:
 
-$$
+$$~
 A'(t) = w'(t) h(t) + w(t) h'(t).
-$$
+~$$
 
 As an aside, it is fairly conventional to suppress the $(t)$ part of
 the notation $A=wh$ and to use the Leibniz notation for derivatives:
 
-$$
+$$~
 \frac{dA}{dt} = \frac{dw}{dt} h + w \frac{dh}{dt}.
-$$
+~$$
 
 This relationship is true for all $t$, but the problem discusses a
-certain value of $t$ -- when $w(t)=8$ and $h(t) = 12$. At this same
+certain value of $t$---when $w(t)=8$ and $h(t) = 12$. At this same
 value of $t$, we have $w'(t) = 4$ and so $h'(t) = 6$. Substituting these 4 values into the 4 unknowns in the formula for $A'(t)$ gives:
 
-$$
+$$~
 A'(t) = 4 \cdot 12 + 8 \cdot 6 = 96.
-$$
+~$$
 
 Summarizing, from the relationship between $A$, $w$ and $t$, there is
 a relationship between their rates of growth with respect to $t$, a
@@ -62,7 +68,7 @@ We could also have done this differently. We would recognize the following:
 A(w,h) = w * h
 ```
 
-- The width -- expanding at a rate of $4t$ from a starting value of $2$ -- must satisfy:
+- The width---expanding at a rate of $4t$ from a starting value of $2$---must satisfy:
 
 ```
 w(t) = 2 + 4*t
@@ -91,6 +97,7 @@ Now to answer the question, when the width is 8, we must have that $t$ is:
 
 ```
 using Roots
+Base.ctranspose(f::Function) = D(f)             # so f' works in place of D(f)
 tstar = fzero(x -> w(x) - 8, [0, 4])		# or solve by hand to get 3/2
 ```
 
@@ -100,11 +107,11 @@ differentiation, the substituting in the value.
 
 Here we do so with the aid of `Julia`, though this problem could readily be done "by hand." 
 
-We (again) re-express $A$ as a function of $t$ by composition, then differentiate that with the `D` operator of `Roots`:
+We (again) re-express $A$ as a function of $t$ by composition, then differentiate that:
 
 ```
 A(t) = A(w(t), h(t))
-da_dt = D(A)(tstar)
+da_dt = A'(tstar)
 ```
 
 So what? Why is 96 of any interest? It is if the value at a specific
@@ -128,7 +135,7 @@ How can this relationship be summarized? Well, let's go back to what we know, th
 
 ```
 using SymPy
-t = symbols("t", real=true)
+@vars t
 diff(A(t), t)
 ```
 
@@ -152,16 +159,16 @@ in terms of $db/dt$.
 
 We have from implicitly differentiating in $t$ the equation $l^2 = h^2 + b^2$,  noting that $l$ is a constant, that:
 
-$$
+$$~
 0 = 2h \frac{dh}{dt} + 2b \frac{db}{dt}.
-$$
+~$$
 
 
 Solving, yields:
 
-$$
+$$~
 \frac{dh}{dt} = -\frac{b}{h} \cdot \frac{db}{dt}.
-$$
+~$$
 
 
 * If $l = 12$ and $db/dt = 2$ when $b=4$, find $dh/dt$.
@@ -192,34 +199,34 @@ $x(t)$ and the height is $y(t)$.
 The player tracks the flight of the ball in terms of the angle
 $\theta$ made between the ball and the player. This will satisfy:
 
-$$
+$$~
 \tan(\theta) = \frac{y(t)}{100 - x(t)}.
-$$
+~$$
 
 What is the rate of change of $\theta$ with respect to $t$ in terms of that of $x$ and $y$?
 
 We have by the chain rule and quotient rule:
 
-$$
+$$~
 \sec^2(\theta) \theta'(t) = \frac{y'(t) \cdot (100 - x(t)) - y(t) \cdot (-x'(t))}{(100 - x(t))^2}.
-$$
+~$$
 
 If we have $x(t) = 50t$ and $y(t)=v_{0y} t - 5 t^2$ when is the rate of change of the angle happening most quickly?
 
 
 The formula for $\theta'(t)$ is
 
-$$
+$$~
 \theta'(t) = \cos^2(\theta) \cdot \frac{y'(t) \cdot (100 - x(t)) - y(t) \cdot (-x'(t))}{(100 - x(t))^2}.
-$$
+~$$
 
 This question requires us to differentiate *again* in $t$. Since we
 have fairly explicit function for $x$ and $y$, we will use `SymPy` to
 do this.
 
 ```
-t = symbols("t", real=true)
-theta = symbols("theta", cls=SymFunction)
+@vars t
+theta = SymFunction("theta")
 
 v0 = 5
 x(t) = 50t
@@ -235,7 +242,7 @@ dtheta = solve(diff(eqn, t), thetap)[1]
 We could proceed directly by evaluating:
 
 ```
-d2theta = subs(diff(dtheta, t), thetap, dtheta)
+d2theta = diff(dtheta, t)(thetap => dtheta)
 ```
 
 That is not so tractable, however.
@@ -247,14 +254,14 @@ be $100 - x(t)$ divided by the length of the hypotenuse. So we can
 substitute:
 
 ```
-dtheta = subs(dtheta, cos(theta(t))^2, (100 -x(t))^2/(y(t)^2 + (100-x(t))^2))
+dtheta = dtheta(cos(theta(t))^2 => (100 -x(t))^2/(y(t)^2 + (100-x(t))^2))
 ```
 
 
 Plotting reveals some interesting things. For $v_{0y} < 10$ we have graphs that look like:
 
 ```
-using Gadfly
+using Plots
 plot(dtheta, 0, v0/5)
 ```
 
@@ -298,24 +305,24 @@ The volume of a cone of height $h$ is $V(h) = \pi/3 h \cdot
 R^2$. From the geometry, $R = h\tan(\theta)$. The volume of the
 filter then is:
 
-$$
+$$~
 V = V(h) - V(h_0).
-$$
+~$$
 
 What is $dV/dh$ in terms of $dR/dh$?
 
 Differentiating implicitly gives:
 
 
-$$
+$$~
 \frac{dV}{dh} = \frac{\pi}{3} ( R(h)^2 + h \cdot 2 R \frac{dR}{dh}).
-$$
+~$$
 
-We see that it depends on $R$ and the change in $R$ with respect to $h$. However, we visualize $h$ -- the height -- so it is better to re-express. Clearly, $dR/dh = \tan\theta$ and using $R(h) = h \tan(\theta)$ we get:
+We see that it depends on $R$ and the change in $R$ with respect to $h$. However, we visualize $h$---the height---so it is better to re-express. Clearly, $dR/dh = \tan\theta$ and using $R(h) = h \tan(\theta)$ we get:
 
-$$
+$$~
 \frac{dV}{dh} = \pi h^2 \tan^2(\theta).
-$$
+~$$
 
 The rate of change goes down as $h$ gets smaller ($h \geq h_0$) and gets bigger for bigger $\theta$.
 
@@ -326,7 +333,7 @@ it leaves we will have $dh/dt$ is the ratio of the cross-sectional
 area at bottom over that at the height of the fluid $(\pi \cdot (h_0\tan(\theta))^2) /
 (\pi \cdot ((h\tan\theta))^2)$ times the outward velocity of the fluid.
 
-That is $dh/dt = (h_0/h)^2 \cdot v$. Which makes sense -- larger openings
+That is $dh/dt = (h_0/h)^2 \cdot v$. Which makes sense---larger openings
 ($h_0$) mean more fluid lost per unit time so the height change
 follows, higher levels ($h$) means the change in height is slower, as
 the cross-sections have more volume.
@@ -335,21 +342,22 @@ the cross-sections have more volume.
 By [Torricelli's](http://en.wikipedia.org/wiki/Torricelli's_law) law,
 the out velocity follows the law $v = \sqrt{2g(h-h_0)}$. This gives:
 
-$$
+$$~
 \frac{dh}{dt} = \frac{h_0^2}{h^2} \cdot v = \frac{h_0^2}{h^2} \sqrt{2g(h-h_0)}.
-$$
+~$$
 
 If $h >> h_0$, then $\sqrt{h-h_0} = \sqrt{h}\sqrt(1 - h_0/h) \approx \sqrt{h}(1 - (1/2)(h_0/h)) \approx \sqrt{h}$. So the rate of change of height in time is like $1/h^{3/2}$.
 
 
 Now, by the chain rule, we have then the rate of change of volume with respect to time, $dV/dt$, is:
 
-$$
+$$~
 \frac{dV}{dt} =
 \frac{dV}{dh} \cdot \frac{dh}{dt} =
 \pi h^2 \tan^2(\theta) \cdot \frac{h_0^2}{h^2} \sqrt{2g(h-h_0)} =
-\pi \sqrt{2g} \cdot (r_0)^2 \cdot \sqrt{h-h_0}.
-$$
+\pi \sqrt{2g} \cdot (r_0)^2 \cdot \sqrt{h-h_0}
+\approx \pi \sqrt{2g} \cdot r_0^2 \cdot \sqrt{h}
+~$$
 
 
 
@@ -409,9 +417,9 @@ radioq(choices, ans, keep_order=true)
 ###### Question
 
 A pebble is thrown into a lake causing ripples to form expanding
-circles. Suppose the circle expand as rate of 1 foot per second and
+circles. Suppose one of the circles expands at a rate of 1 foot per second and
 the radius of the circle is 10 feet, what is the rate of change of
-area enclosed by the circle?
+the area enclosed by the circle?
 
 ```
 # a = pi*r^2
@@ -466,7 +474,7 @@ wall. A six foot tall man is walking towards the wall at the rate of
 4 feet per second. How fast is the tip of his shadow moving down the
 wall when he is 50 feet from the wall?
 [Source.](http://oregonstate.edu/instruct/mth251/cq/Stage9/Practice/ratesProblems.html)
-(The answer is positive, as the question is written.)
+(As the question is written the answer should be positive.)
 
 ```
 ## y/200 = 6/x
@@ -513,7 +521,7 @@ numericq(drdt, units="units per unit time")
 
 ###### Question
 
-Consider the curve $f(x) = x^2 - log(x)$. For a given $x$, the tangent line intersects the $y$ axis. Where?
+Consider the curve $f(x) = x^2 - \log(x)$. For a given $x$, the tangent line intersects the $y$ axis. Where?
 
 ```
 choices = [

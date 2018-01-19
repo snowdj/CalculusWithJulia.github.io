@@ -1,5 +1,10 @@
 # Limits, issues, extensions of the concept
 
+```nocode,noout
+using Plots
+plotly()
+```
+
 The limit of a function at $c$ need not exist for one of many
 different reasons. Some of these reasons can be handled with
 extensions to the concept of the limit, others are just problematic in
@@ -9,9 +14,9 @@ terms of limits. This section covers examples of each.
 
 Let's begin with a function that is just problematic. Consider
 
-$$
+$$~
 f(x) = \sin(1/x)
-$$
+~$$
 
 As this is a composition of nice functions it will have a limit
 everywhere except possibly when $x=0$, as then $1/x$ may not have a
@@ -21,21 +26,21 @@ question of whether a limit exists at $c=0$.
 
 A graph shows the issue:
 
-```
-using Gadfly
+```nocode
+using Plots
 f(x) = sin(1/x)
-plot(f, -1, 1)
+plot(f, linspace(-1, 1, 1000))
 ```
 
 The graph oscillates between $-1$ and $1$ infinitely many times on
-this interval -- so many times, that no matter how close one zooms in,
+this interval---so many times, that no matter how close one zooms in,
 the graph on the screen will fail to capture them all. Graphically,
 there is no single value of $L$ that the function gets close to, as it
 varies between all the values in $[-1,1]$ as $x$ gets close to $0$. A
 simple proof that there is no limit, is to take any $\epsilon$ less
 than $1$, then with any $\delta > 0$, there are infinitely many $x$
 values where $f(x)=1$ and infinitely many where $f(x) = -1$. That is,
-there is no $L$ with $|f(x) - L| < \epsilon$.
+there is no $L$ with $|f(x) - L| < \epsilon$ when $\epsilon$ is less than $1$ for all $x$ near $0$.
 
 This function basically has too many values it gets close to. Another
 favorite example of such a function is the function that is $0$ if $x$
@@ -48,15 +53,17 @@ $f(x) = x \cdot \sin(1/x)$. This function again has a limit everywhere
 save possibly $0$. But in this case, there is a limit at $0$ of
 $0$. This is because, the following is true:
 
-$$
+$$~
 -|x| \leq x \sin(1/x) \leq |x|.
-$$
+~$$
 
 The following figure illustrates:
 
 ```
 f(x) = x * sin(1/x)
-plot([f, abs, x -> -abs(x)], -1,1)
+plot(f, -1, 1)
+plot!(abs)
+plot!(x -> -abs(x))
 ```
 
 
@@ -67,7 +74,7 @@ $0$ at $0$.
 
 ## Right and left limits
 
-Another example where $f(x)$ has no limit is the $f(x) = x /|x|$. This
+Another example where $f(x)$ has no limit is the  function $f(x) = x /|x|, x \neq 0$. This
 function is $-1$ for negative $x$ and $1$ for positive $x$. Again,
 this function will have a limit everywhere except possibly at $x=0$,
 where division by $0$ is possible.
@@ -79,9 +86,9 @@ f(x) = abs(x)/x
 plot(f, -2, 2)
 ```
 
-The sharp jump at $0$ is misleading -- again, the plotting algorithm
+The sharp jump at $0$ is misleading---again, the plotting algorithm
 just connects the points, it doesn't handle what is a fundamental
-discontinuity well -- the function is not defined at $0$ and jumps
+discontinuity well---the function is not defined at $0$ and jumps
 from $-1$ to $1$ there. Similarly to our example of $\sin(1/x)$, near
 $0$ the function get's close to both $1$ and $-1$, so will have no
 limit. (Again, just take $\epsilon$ smaller than $1$.)
@@ -90,7 +97,7 @@ But unlike the previous example, this function *would* have a limit if
 the definition didn't consider values of $x$ on both sides of $c$. The
 limit on the right side would be $1$, the limit on the left side would
 be $-1$. This distinction is useful, so there is an extension of the idea of a
-limit to *one-sided limits.
+limit to *one-sided limits*.
 
 
 Let's loosen up the language in the definition of a limit to read:
@@ -161,8 +168,8 @@ $f(x) = x^x$ at $x=0$. This function is not well defined for all $x <
 has a right limit $\lim_{x \rightarrow 0+} x^x = 1$. `SymPy` can verify:
 
 ```
-x = symbols("x", real=true)
-limit(x^x, x, 0, dir="-")
+@vars x real=true
+limit(x^x, x, 0, dir="+")
 ```
 
 This agrees with the IEEE convention of assigning `0^0` to be `1`.
@@ -174,26 +181,23 @@ have a limit of $1$.
 
 Consider this funny graph:
 
-```
+```nocode
 xs = linspace(0,1)
 
-p = plot(layer(x=xs-2, y=map(x -> x^2, xs-2), Geom.line),
-     layer(x=xs-1, y=map(x -> exp(x), xs-1), Geom.line),
-     layer(x=xs-0, y=map(x -> 1 - 2x, xs-0), Geom.line),
-     layer(x=xs+1, y=map(x->sqrt(x), xs+1), Geom.line),
-     layer(x=xs+2, y=map(x->1-x, xs+2), Geom.line))
-Outputonly(p)
+plot(x->x^2, -2, -1, legend=false)
+plot!(exp, -1,0)
+plot!(x -> 1-2x, 0, 1)
+plot!(sqrt, 1, 2)
+plot!(x -> 1-x, 2,3)
 ```
 
 Describe the limits at $-1$, $0$, and $1$.
 
-- At $-1$ we see a jump, there is no limit but instead a left limit of 1
-and a right limit appearing to be $1/2$.
+* At $-1$ we see a jump, there is no limit but instead a left limit of 1 and a right limit appearing to be $1/2$.
 
-- At $0$ we see a limit of $1$.
+* At $0$ we see a limit of $1$.
 
-- Finally, at $1$ again there is a jump, so no limit. Instead the left
-limit is about $-1$ and the right limit $1$.
+* Finally, at $1$ again there is a jump, so no limit. Instead the left limit is about $-1$ and the right limit $1$.
 
 
 
@@ -218,18 +222,16 @@ Let's consider some cases.
 
 The function $f(x) = \sin(x)$ will not have a limit at $+\infty$ for
 exactly the same reason that $f(x) = \sin(1/x)$ does not have a limit
-at $c=0$ -- it just oscillates between $-1$ and $1$ so never
+at $c=0$---it just oscillates between $-1$ and $1$ so never
 eventually gets close to a single value.
 
-`SymPy` gives an odd answer here:
+`SymPy` gives an odd answer here indicating the range of values:
 
 ```
-limit(sin, oo)
+limit(sin(x), x=>oo)
 ```
 
-Clearly `sin(∞)` is not defined.
-
-(We use `SymPy`'s `oo` for $\infty$ and not `Inf`.)
+(We used `SymPy`'s `oo` for $\infty$ and not `Inf`.)
 
 ----
 
@@ -237,8 +239,8 @@ Clearly `sin(∞)` is not defined.
 However, a damped oscillation, such as $f(x) = e^{-x} \sin(x)$ will have a limit:
 
 ```
-x = symbols("x", real=true)
-limit(exp(-x)*sin(x), x, oo)
+@vars x real=true
+limit(exp(-x)*sin(x), x=>oo)
 ```
 
 
@@ -248,7 +250,7 @@ We have rational functions will have the expected limit. In this
 example $m = n$, so we get a horizontal asymptote that is not $y=0$:
 
 ```
-limit((x^2 - 2x +2)/(4x^2 + 3x - 2), x, oo)
+limit((x^2 - 2x +2)/(4x^2 + 3x - 2), x=>oo)
 ```
 ----
 
@@ -259,7 +261,7 @@ f(x) = x / sqrt(x^2 + 4)
 limit(f, oo), limit(f, -oo)
 ```
 
-(A simpler example is just the function $|x|/x$ considered earlier.)
+(A simpler example showing this behavior is just the function $|x|/x$ considered earlier.)
 
 ## Limits of infinity
 
@@ -270,8 +272,8 @@ $f(x)$ heads towards positive or negative infinity, not some finite
 $L$. As such, a neighborhood like $(L-\epsilon, L+\epsilon)$ will no
 longer make sense, rather we replace it with an expression like $(M,
 \infty)$ or $(-\infty, M)$. As in: the limit of $f(x)$ as $x$
-approaches $c$ is infinity if for every $M > 0$ there exists a
-$\delta>0$ such that if $0 < |x-c| < \delta$ then $f(x) > M$.
+approaches $c$ is *infinity* if for every $M > 0$ there exists a
+$\delta>0$ such that if $0 < |x-c| < \delta$ then $f(x) > M$. Approaching $-\infty$ would conclude with $f(x) < -M$ for all $M>0$.
 
 ##### Examples
 
@@ -280,32 +282,28 @@ point except possibly $0$, where division by $0$ is possible. In this
 case, there is a vertical asymptote. The limit at $0$ is $\infty$, in
 the extended sense above. For $M>0$, we can take any $0 < \delta <
 1/\sqrt{M}$. The following graph shows $M=25$ where the function
-values are outside of the box, as $f(x) > M$ for those $x$ values.
+values are outside of the box, as $f(x) > M$ for those $x$ values with $0 < |x-0| < 1/\sqrt{M}$.
 
-```
+```nocode
 f(x) = 1/x^2
 M = 25
 delta = 1/sqrt(M)
 
-xs = linspace(-1, 1)
-ys = [1/x^2 > 50 ? NaN : 1/x^2 for x in xs]
-p = plot(layer(x=xs, y=ys, Geom.line),
-     layer(x=[-delta, delta], y=[M,M], Geom.line, Theme(default_color=color("orange"))),
-     layer(x=[-delta, -delta], y=[0,M], Geom.line, Theme(default_color=color("red"))),
-     layer(x=[delta, delta], y=[0,M], Geom.line, Theme(default_color=color("red"))))
-Outputonly(p)
+f(x) = 1/x^2 > 50 ? NaN : 1/x^2
+plot(f, -1, 1)
+plot!(x=[-delta, delta], y=[M,M], color=color("orange"))
+plot!([-delta, -delta], [0,M], color=color("red"))
+plot!([delta, delta], [0,M], color=color("red"))
 ```
 
 ----
 
 The function $f(x)=1/x$ requires us to talk about left and right limits of infinity, with the natural generalization. We can see that the left limit at $0$ is $-\infty$ and the right limit $\infty$:
 
-```
+```nocode
 f(x) = 1/x
-xs = linspace(1/50, 1)
-p = plot(layer(x=xs, y=map(f, xs), Geom.line),
-         layer(x=-xs, y=map(f, -xs), Geom.line))
-Outputonly(p)
+plot(f, 1/50, 1,    color=:blue, legend=false)
+plot!(f, -1, -1/50, color=:blue)
 ```
 
 `SymPy` agrees:
@@ -342,14 +340,13 @@ we developed a sequence of sums: $s_n = 1/2 \dot((1/4)^0 + (1/4)^1 + (1/4)^2 +
 only on non-negative integer values of $n$. However, the same idea as
 a limit at infinity can be used to define a limit:
 
-> $\lim_{n \rightarrow \infty} a_n = L$ if for every $\epsilon > 0$
-> there is an $M>0$ where if $n > M$ then $|a_n - L| < \epsilon$.
+> We have $\lim_{n \rightarrow \infty} a_n = L$ if for every $\epsilon > 0$ there is an $M>0$ where if $n > M$ then $|a_n - L| < \epsilon$.
 
 
 `SymPy` is happy to compute limits of sequences, but defining this one is best done with the `summation` function:
 
 ```
-i, n = symbols("i, n", integer=true)
+@vars i n integer=true
 s(n) = 1//2 * summation((1//4)^i, (i, 0, n))    # rationals make for an exact answer
 limit(s(n), n, oo)
 ```
@@ -484,7 +481,7 @@ ans = 1
 radioq(choices, ans)
 ```
 
-Find $lim_{x \rightarrow -3-} (x-3)/(x+3)$.
+Find $\lim_{x \rightarrow -3-} (x-3)/(x+3)$.
 
 
 
@@ -499,7 +496,7 @@ radioq(choices, ans)
 Some functions do not have a limit. Make a graph of $\sin(1/x)$ from $0.0001$ to $1$ and look at the output. Why does a limit not exist?
 
 ```
-choices=["The limit does exist -- it is any number from -1 to 1",
+choices=["The limit does exist---it is any number from -1 to 1",
   "Err, the limit does exists and is 1",
   "The function oscillates too much and its y values do not get close to any one value",
   "Any function that oscillates does not have a limit."]
@@ -516,9 +513,9 @@ Is the form $0^0$ really indeterminate? As mentioned `0^0` evaluates to `1`.
 
 Consider this limit:
 
-$$
+$$~
 \lim_{x \rightarrow 0+} x^{k\cdot x} = L.
-$$
+~$$
 
 Consider different values of $k$ to see if this limit depends on $k$ or not. What is $L$?
 
@@ -532,9 +529,9 @@ radioq(choices, ans)
 
 Now, consider this limit:
 
-$$
+$$~
 \lim_{x \rightarrow 0+} x^{1/\log_k(x)} = L.
-$$
+~$$
 
 In `julia`, $\log_k(x)$ is found with `log(k,x)`. The default, `log(x)` takes $k=e$ so gives the natural log. So, we would define `f`, for a given `k`, with
 
@@ -560,9 +557,9 @@ Limits *of* infinity *at* infinity. We could define this concept quite
 easily mashing together the two definitions. Suppose we did. Which of
 these ratios would have a limit of infinity at infinity:
 
-$$
+$$~
 x^4/x^3,\quad x^{100+1}/x^{100}, \quad x/\log(x), \quad 3^x / 2^x, \quad e^x/x^{100}
-$$
+~$$
 
 ```
 choices=[

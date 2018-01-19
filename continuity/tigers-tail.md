@@ -8,7 +8,7 @@ The `round` function will round the values of `f` up or down to the nearest inte
 
 ```
 g(x) = f(x) - round(f(x))
-```
+
 
 Concentrating on $[-2,1]$ there are many roots, in fact more than 250. Knowing this, we instruct the `fzeros` function to use more points in its initial partitioning of the interval:
 
@@ -34,11 +34,11 @@ Now there  are just 345 actual roots.
 The name "tiger's tail" is given, as this plot of the function and the roots layered on top looks like a tiger's tail when the right colors are used.
 
 ```
-using PyPlot
+using Plots
 xs = linspace(-2, 1, 10_000)
 ys = [f(x) for x in xs]
-plot(xs, ys, color="orange")
+plot(xs, ys, color=:orange)
 ys = [f(x) for x in rts]
-plot(rts, ys, color="black", "ro")
+scatter!(rts, ys, color=:black, markersize=1)
 ```
 

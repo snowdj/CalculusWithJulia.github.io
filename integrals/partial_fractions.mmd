@@ -1,5 +1,10 @@
 # Partial Fractions
 
+```nocode, noout
+using Plots
+plotly()
+```
+
 Integration is facilitated when an antiderivative for $f$ can be found, as then definite integrals can be evaluated through the fundamental theorem of calculus.
 
 However, despite integration being an algorithmic procedure,
@@ -23,7 +28,7 @@ ratios, *rational functions*.
 ## Partial fraction decomposition
 
 Let $f(x) = p(x)/q(x)$, where  $p$ and $q$ are polynomial
-functions. Further, we assume without that $p$ and $q$ have no common
+functions. Further, we assume without comment that $p$ and $q$ have no common
 factors. (If they did, we can divide them out, an act which has no
 effect on the integrability of $f(x)$.
 
@@ -36,19 +41,19 @@ polynomial and $n_k$ a positive integer.
 
 > **Partial Fraction Decomposition**: There are unique polynomials $a_{ij}$ with degree $a_{ij} <$
 > degree $q_i$ such that
-> $$
+> $$~
 > \frac{p(x)}{q(x)} = a(x) + \sum_{i=1}^k \sum_{j=1}^{n_i} \frac{a_{ij}(x)}{q_i(x)^j}.
-> $$
+> ~$$
 
 The method is attributed to John Bernoulli, one of the prolific
-Bernoulli brothers who put a stamp several areas of math. This
+Bernoulli brothers who put a stamp on several areas of math. This
 Bernoulli was a mentor to Euler.
 
 This basically says that each factor $q_i(x)^{n_i}$ contributes a term like:
 
-$$
+$$~
 \frac{a_{i1}}{q_i(x)^1} + \frac{a_{i2}}{q_i(x)^2} + \cdots + \frac{a_{in_i}}{q_i(x)^{n_i}},
-$$
+~$$
 
 where each $a_{ij}$ has degree less than the degree of $q_i$.
 
@@ -61,7 +66,7 @@ note("""
 
 Many calculus texts will give some examples for finding a partial
 fraction decomposition. We push that work off to `SymPy`, as for all
-but the easiest cases -- a few are in the problems -- it can be a bit tedious.
+but the easiest cases---a few are in the problems---it can be a bit tedious.
 
 """)
 ```
@@ -72,7 +77,7 @@ $q_i$
 
 ```
 using SymPy
-a,b,c,A,B,x = symbols("a,b,c,A, B,x", real=true)
+@vars a b c A B x real=true
 ```
 
 ```
@@ -92,31 +97,31 @@ there are no common factors to any of the three polynomials.
 
 Since $q(x)$ and $Q(x)$ share no factors, 
 [Bezout's](http://tinyurl.com/kd6prns)
-identity says there exists $a$ and $b$ 
+identity says there exists polynomials $a(x)$ and $b(x)$  with:
 
-$$
+$$~
 a(x) Q(x) + b(x) q(x) = 1.
-$$
+~$$
 
 
 Then dividing by $q^k(x)Q(x)$ gives the decomposition
 
-$$
+$$~
 \frac{1}{q(x)^k Q(x)} = \frac{a(x)}{q(x)^k} + \frac{b(x)}{q(x)^{k-1}Q(x)}.
-$$
+~$$
 
 So we get by multiplying the $P(x)$:
 
-$$
+$$~
 \frac{P(x)}{q(x)^k Q(x)} = \frac{A(x)}{q(x)^k} + \frac{B(x)}{q(x)^{k-1}Q(x)}.
-$$
+~$$
 
-This may look more complicated, but what it does if peel off one term
+This may look more complicated, but what it does is peel off one term
 (The first) and leave something which is smaller, in this case by a
 factor of $q(x)$. This process can be repeated pulling off a power of a factor at a time until nothing is left to do.
 
 
-What remains is to establish that we can take $A(x)$ with a degree less than that of $q(x)$.
+What remains is to establish that we can take $A(x) = a(x)\cdot P(x)$ with a degree less than that of $q(x)$.
 
 In Proposition 3.8 of
 [Bradley](http://www.m-hikari.com/imf/imf-2012/29-32-2012/cookIMF29-32-2012.pdf)
@@ -171,15 +176,15 @@ $Ax + B$.
 
 Rather than try to consider the general case of
 
-$$
+$$~
 \frac{Ax +B }{(ax^2  + bx + c)^j},
-$$
+~$$
 
 which can be handled, it is best to shift the value of $x$ so that this is no more than a constant times:
 
-$$
+$$~
 \frac{Ax + B}{((ax)^2 \pm 1)^j}
-$$
+~$$
 
 This can be done by finding a $d$ so that $a(x-d)^2 + b(x-d) + c = dx^2 + e = e((\sqrt{d/e}x^2 \pm 1)$.
 
@@ -271,11 +276,31 @@ numericq(val)
 
 ###### Question
 
-The following gives the general partial fraction decomposition:
+The following gives the partial fraction decomposition for a rational expression:
 
-$$
+$$~
+\frac{3x+5}{(1-2x)^2} = \frac{A}{1-2x} + \frac{B}{(1-2x)^2}.
+~$$
+
+Find $A$ (being careful with the sign):
+
+```
+numericq(-3/2)
+```
+
+Find $B$:
+
+```
+numericq(13/2)
+```
+
+###### Question
+
+The following specifies the general partial fraction decomposition for a rational expression:
+
+$$~
 \frac{1}{(x+1)(x-1)^2} = \frac{A}{x+1} + \frac{B}{x-1} + \frac{C}{(x-1)^2}.
-$$
+~$$
 
 Find $A$:
 
@@ -300,9 +325,9 @@ numericq(1/2)
 
 Compute the following exactly:
 
-$$
+$$~
 \int_0^1 \frac{(x-2)(x-3)}{(x-4)^2\cdot(x-5)} dx
-$$
+~$$
 
 Is $-6\log(5) - 5\log(3) - 1/6 + 11\log(4)$ the answer?
 
@@ -314,9 +339,9 @@ yesnoq("yes")
 
 In the assumptions for the partial fraction decomposition is the fact that $p(x)$ and $q(x)$ share no common factors. Suppose, this isn't the case and in fact we have:
 
-$$
+$$~
 \frac{p(x)}{q(x)} = \frac{(x-c)^m s(x)}{(x-c)^n t(x)}.
-$$
+~$$
 
 Here $s$ and $t$ are polynomials such that $s(c)$ and $t(c)$ are non-zero.
 
@@ -328,7 +353,7 @@ choices = [
 L"The value $c$ is a removable singularity, so the integral will be identical.",
 L"The resulting function has an identical domain and is equivalent for all $x$."
 ]
-ans = 3
+ans = 2
 radioq(choices, ans, keep_order=true)
 ```
 
